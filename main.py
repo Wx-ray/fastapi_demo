@@ -107,9 +107,15 @@ def todo():
 
 # ---------- 用户：增删改查 ----------
 @app.get("/users")
-def list_users():
+def list_users(name: str | None = None):
     conn = get_conn()
-    rows = conn.execute("SELECT id, 姓名, 角色 FROM users ORDER BY id").fetchall()
+    if name:
+        rows = conn.execute(
+            "SELECT id, 姓名, 角色 FROM users WHERE 姓名 LIKE ? ORDER BY id",
+            (f"%{name}%",)
+        ).fetchall()
+    else:
+        rows = conn.execute("SELECT id, 姓名, 角色 FROM users ORDER BY id").fetchall()
     conn.close()
     users = [{"id": r["id"], "姓名": r["姓名"], "角色": r["角色"]} for r in rows]
     return {"用户": users}
