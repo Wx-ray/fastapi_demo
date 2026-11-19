@@ -1,3 +1,4 @@
+# FastAPI 练手项目：users/news 资源的增删改查接口 + 演示页面
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
@@ -35,7 +36,7 @@ news = [
 
 @app.get("/")
 def home():
-    return {"状态": "成功", "数据": "服务跑起来了"}
+    return {"状态": "成功", "数据": "服务跑起来了", "框架": "FastAPI"}
 
 @app.get("/hello/{name}")
 def greet(name: str):
