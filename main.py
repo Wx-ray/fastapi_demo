@@ -26,7 +26,10 @@ class NewsCreate(BaseModel):
     标题: str
     内容: str
     日期: str
-
+class NewsUpdate(BaseModel):
+    标题: str | None = None
+    内容: str | None = None
+    日期: str | None = None
 # 内存里的新闻数据
 news = [
     {"id": 1, "标题": "FastAPI本地跑通", "内容": "三个GET接口已在127.0.0.1:8000启动", "日期": "2026/11/18"},
@@ -95,8 +98,25 @@ def add_news(news_item: NewsCreate):
     }
     news.append(new_news)
     return {"消息": "新增成功", "新闻": new_news}
-
-
+@app.put("/news/{news_id}")
+def update_news(news_id: int, news_item: NewsUpdate):
+    for u in news:
+        if u["id"] == news_id:
+            if news_item.标题 is not None:
+                u["标题"] = news_item.标题
+            if news_item.内容 is not None:
+                u["内容"] = news_item.内容
+            if news_item.日期 is not None:
+                u["日期"] = news_item.日期
+            return {"消息": "修改成功", "新闻": u}
+    raise HTTPException(status_code=404, detail="新闻不存在")
+@app.delete("/news/{news_id}")
+def delete_news(news_id: int):
+    for u in news:
+        if u["id"] == news_id:
+            news.remove(u)
+            return {"消息": "删除成功", "id": news_id}
+    raise HTTPException(status_code=404, detail="新闻不存在")
 @app.get("/page", response_class=HTMLResponse)
 def user_page():
     html = """
